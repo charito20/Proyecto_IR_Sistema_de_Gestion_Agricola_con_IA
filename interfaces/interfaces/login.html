@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGA - Inicio de Sesión</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#F3F2EC;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.login{
+    width:380px;
+    background:white;
+    border-radius:15px;
+    box-shadow:0 8px 20px rgba(0,0,0,.15);
+    overflow:hidden;
+}
+
+.header{
+    background:#2E7D32;
+    color:white;
+    text-align:center;
+    padding:30px;
+}
+
+.header h1{
+    font-size:28px;
+    margin-bottom:5px;
+}
+
+.header p{
+    font-size:14px;
+}
+
+.formulario{
+    padding:30px;
+}
+
+.formulario label{
+    font-weight:bold;
+    color:#444;
+}
+
+.formulario input{
+    width:100%;
+    padding:12px;
+    margin-top:8px;
+    margin-bottom:18px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:15px;
+}
+
+.formulario input:focus{
+    outline:none;
+    border:2px solid #2E7D32;
+}
+
+button{
+    width:100%;
+    padding:13px;
+    background:#2E7D32;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+button:hover{
+    background:#256428;
+}
+
+.footer{
+    text-align:center;
+    padding:18px;
+    font-size:13px;
+    color:#666;
+}
+
+.footer a{
+    color:#2E7D32;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.footer a:hover{
+    text-decoration:underline;
+}
+</style>
+
+</head>
+<body>
+
+<div class="login">
+
+    <div class="header">
+        <h1>🌱 SGA</h1>
+        <p>Sistema de Gestión Agrícola</p>
+    </div>
+
+    <div class="formulario">
+
+        <label>Usuario</label>
+        <input type="text" placeholder="Ingrese su usuario">
+
+        <label>Contraseña</label>
+        <input type="password" placeholder="Ingrese su contraseña">
+
+        <button>Iniciar sesión</button>
+
+    </div>
+
+    <div class="footer">
+        <a href="#">¿Olvidó su contraseña?</a>
+    </div>
+
+</div>
+
+</body>
+</html>
