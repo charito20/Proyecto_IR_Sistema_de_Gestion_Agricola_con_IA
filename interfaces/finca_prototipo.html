@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>AgriMoreira — Prototipo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --soil:#2e2a1f;
+    --leaf:#3c5a3e;
+    --leaf-dark:#28402a;
+    --parchment:#f3ede0;
+    --parchment-dim:#e8e0cd;
+    --amber:#c97e3a;
+    --rust:#a8442f;
+    --ink:#262219;
+    --line:#cdc2a4;
+    --paper-white:#fbf8f1;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--parchment);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    min-width:1180px;
+  }
+  ::selection{background:var(--amber); color:var(--paper-white);}
+
+  /* ---------- APP SHELL ---------- */
+  .app{
+    display:grid;
+    grid-template-columns:248px 1fr;
+    height:100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar{
+    background:var(--leaf-dark);
+    color:var(--parchment);
+    display:flex;
+    flex-direction:column;
+    padding:28px 0 20px;
+    position:relative;
+  }
+  .sidebar::after{
+    content:"";
+    position:absolute; top:0; right:0; bottom:0; width:1px;
+    background:linear-gradient(180deg, transparent, rgba(255,255,255,.12) 20%, rgba(255,255,255,.12) 80%, transparent);
+  }
+  .brand{
+    padding:0 26px 26px;
+    border-bottom:1px solid rgba(255,255,255,.12);
+    margin-bottom:18px;
+  }
+  .brand .mark{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:22px;
+    letter-spacing:.2px;
+    color:var(--parchment);
+  }
+  .brand .sub{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:1.6px;
+    text-transform:uppercase;
+    color:#9fb39e;
+    margin-top:5px;
+  }
+  .nav{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    padding:0 14px;
+  }
+  .nav button{
+    all:unset;
+    cursor:pointer;
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    padding:12px 12px;
+    border-radius:6px;
+    color:#cdd9c9;
+    font-size:14px;
+    font-weight:500;
+    transition:background .15s ease, color .15s ease;
+  }
+  .nav button .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    color:#73886f;
+    min-width:18px;
+  }
+  .nav button:hover{ background:rgba(255,255,255,.06); color:#fff;}
+  .nav button.active{ background:var(--parchment); color:var(--leaf-dark); }
+  .nav button.active .tag{ color:var(--amber); }
+
+  .sidebar-foot{
+    margin-top:auto;
+    padding:18px 26px 0;
+    border-top:1px solid rgba(255,255,255,.12);
+  }
+  .farmhand{
+    display:flex; align-items:center; gap:10px;
+  }
+  .avatar{
+    width:34px; height:34px; border-radius:50%;
+    background:var(--amber);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces', serif; font-weight:600; color:var(--leaf-dark); font-size:14px;
+  }
+  .farmhand .name{ font-size:13px; font-weight:600; color:var(--parchment);}
+  .farmhand .role{ font-size:11px; color:#9fb39e;}
+
+  /* MAIN */
+  .main{
+    overflow-y:auto;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(58,90,60,.05), transparent 40%),
+      var(--parchment);
+  }
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:26px 40px 0;
+  }
+  .crumbs{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px; letter-spacing:1.2px; text-transform:uppercase;
+    color:#7a7256;
+  }
+  .crumbs b{ color:var(--leaf-dark); }
+  .page-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:30px;
+    color:var(--ink);
+    margin-top:4px;
+  }
+  .topbar-right{ display:flex; gap:10px; align-items:center; }
+  .pill{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    border:1px solid var(--line);
+    padding:7px 13px;
+    border-radius:20px;
+    color:var(--soil);
+    background:var(--paper-white);
+  }
+  .btn-primary{
+    all:unset; cursor:pointer;
+    background:var(--leaf);
+    color:#fff;
+    font-size:13px; font-weight:600;
+    padding:10px 18px;
+    border-radius:7px;
+    transition:background .15s;
+  }
+  .btn-primary:hover{ background:var(--leaf-dark); }
+  .btn-ghost{
+    all:unset; cursor:pointer;
+    border:1px solid var(--line);
+    color:var(--soil);
+    font-size:13px; font-weight:600;
+    padding:9px 16px;
+    border-radius:7px;
+    background:var(--paper-white);
+  }
+
+  .content{ padding:24px 40px 60px; }
+
+  .screen{ display:none; }
+  .screen.active{ display:block; }
+
+  /* shared cards */
+  .card{
+    background:var(--paper-white);
+    border:1px solid var(--line);
+    border-radius:10px;
+  }
+  .card-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 22px;
+    border-bottom:1px solid var(--line);
+  }
+  .card-head h3{
+    font-family:'Fraunces', serif;
+    font-size:17px; font-weight:600;
+  }
+  .card-head .meta{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px; color:#8a8264; letter-spacing:.5px;
+  }
+  .grid{ display:grid; gap:18px; }
+
+  /* ---------------- SCREEN 1: DASHBOARD ---------------- */
+  .stat-row{ grid-template-columns:repeat(4,1fr); margin-bottom:20px;}
+  .stat{
+    background:var(--paper-white);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px 20px;
+    position:relative;
+    overflow:hidden;
+  }
+  .stat .num{ font-family:'Fraunces', serif; font-size:32px; font-weight:600; color:var(--leaf-dark); }
+  .stat .lbl{ font-size:12.5px; color:#75714f; margin-top:4px; }
+  .stat .delta{ font-family:'IBM Plex Mono', monospace; font-size:11px; margin-top:10px; display:inline-block; padding:3px 8px; border-radius:4px;}
+  .delta.up{ background:#e3ead9; color:var(--leaf-dark); }
+  .delta.warn{ background:#f3e1c8; color:#8a5118; }
+  .delta.bad{ background:#f1dad4; color:var(--rust); }
+
+  .dash-grid{ grid-template-columns: 1.4fr 1fr; align-items:start; }
+
+  .plot-map{
+    padding:20px 22px;
+  }
+  .plots{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:10px;
+    margin-top:14px;
+  }
+  .plot{
+    border-radius:8px;
+    padding:13px 12px;
+    border:1px solid var(--line);
+    background:var(--parchment-dim);
+    position:relative;
+  }
+  .plot .crop{ font-family:'IBM Plex Mono', monospace; font-size:10px; text-transform:uppercase; letter-spacing:1px; color:#6f6a4e;}
+  .plot .id{ font-family:'Fraunces', serif; font-weight:600; font-size:17px; margin-top:3px;}
+  .plot .status{ margin-top:10px; font-size:11px; font-weight:600; }
+  .plot.ok{ border-left:4px solid var(--leaf); }
+  .plot.ok .status{ color:var(--leaf-dark); }
+  .plot.watch{ border-left:4px solid var(--amber); }
+  .plot.watch .status{ color:#8a5118; }
+  .plot.alert{ border-left:4px solid var(--rust); background:#f8ece8; }
+  .plot.alert .status{ color:var(--rust); }
+
+  .alert-list{ display:flex; flex-direction:column; }
+  .alert-item{
+    display:flex; gap:12px;
+    padding:14px 22px;
+    border-bottom:1px solid var(--line);
+  }
+  .alert-item:last-child{ border-bottom:none; }
+  .alert-dot{ width:9px; height:9px; border-radius:50%; margin-top:5px; flex-shrink:0; }
+  .alert-dot.rust{ background:var(--rust); }
+  .alert-dot.amber{ background:var(--amber); }
+  .alert-dot.leaf{ background:var(--leaf); }
+  .alert-item .t{ font-size:13.5px; font-weight:600; }
+  .alert-item .d{ font-size:12px; color:#7a7256; margin-top:2px; }
+  .alert-item .when{ font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:#9b9474; margin-left:auto; white-space:nowrap; }
+
+  /* ---------------- SCREEN 2: REGISTRO DE COSECHA ---------------- */
+  .form-layout{ grid-template-columns:1.1fr .9fr; }
+  .form-block{ padding:22px; }
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+  .field{ display:flex; flex-direction:column; gap:7px; }
+  .field label{ font-size:12px; font-weight:600; color:var(--soil); }
+  .field .hint{ font-size:10.5px; color:#9b9474; font-family:'IBM Plex Mono', monospace; }
+  .fake-input{
+    border:1px solid var(--line);
+    background:var(--parchment-dim);
+    border-radius:7px;
+    padding:11px 13px;
+    font-size:13.5px;
+    color:#9b9474;
+  }
+  .fake-input.filled{ color:var(--ink); background:var(--paper-white); }
+  .seg{ display:flex; border:1px solid var(--line); border-radius:7px; overflow:hidden; width:fit-content; }
+  .seg div{ padding:9px 16px; font-size:12.5px; font-weight:600; color:#8a8264; cursor:pointer; }
+  .seg div.sel{ background:var(--leaf); color:#fff; }
+  .seg div+div{ border-left:1px solid var(--line); }
+
+  .unit-toggle{ display:flex; gap:8px; }
+  .unit-toggle span{
+    border:1px solid var(--line); border-radius:20px; padding:6px 13px; font-size:11.5px; font-weight:600; color:#8a8264;
+  }
+  .unit-toggle span.sel{ background:var(--amber); border-color:var(--amber); color:#fff; }
+
+  .summary-card{ padding:22px; }
+  .summary-line{ display:flex; justify-content:space-between; padding:11px 0; border-bottom:1px dashed var(--line); font-size:13.5px;}
+  .summary-line:last-of-type{ border-bottom:none; }
+  .summary-line .v{ font-family:'IBM Plex Mono', monospace; font-weight:500; }
+  .summary-total{ display:flex; justify-content:space-between; align-items:baseline; margin-top:14px; padding-top:16px; border-top:1px solid var(--soil); }
+  .summary-total .v{ font-family:'Fraunces', serif; font-size:26px; font-weight:600; color:var(--leaf-dark); }
+
+  .recent-table{ width:100%; border-collapse:collapse; }
+  .recent-table th{
+    text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:.8px;
+    color:#8a8264; padding:10px 22px; border-bottom:1px solid var(--line); font-family:'IBM Plex Mono', monospace; font-weight:500;
+  }
+  .recent-table td{ padding:13px 22px; font-size:13.5px; border-bottom:1px solid var(--line); }
+  .recent-table tr:last-child td{ border-bottom:none; }
+  .badge{ font-size:10.5px; font-weight:600; padding:3px 9px; border-radius:20px; font-family:'IBM Plex Mono', monospace; }
+  .badge.plat{ background:#e3ead9; color:var(--leaf-dark); }
+  .badge.cacao{ background:#e6d8c3; color:#6b4a1f; }
+  .badge.palma{ background:#dde6f0; color:#2a4e6b; }
+
+  /* ---------------- SCREEN 3: TAREAS / TRABAJADORES ---------------- */
+  .board{ grid-template-columns:repeat(4, 1fr); align-items:start; }
+  .col-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 4px 12px;
+  }
+  .col-head h4{ font-size:12.5px; text-transform:uppercase; letter-spacing:.8px; color:#6f6a4e; font-family:'IBM Plex Mono', monospace;}
+  .col-count{ font-size:11px; color:#9b9474; background:var(--parchment-dim); padding:2px 8px; border-radius:20px;}
+  .task-card{
+    background:var(--paper-white); border:1px solid var(--line); border-radius:9px;
+    padding:14px 15px; margin-bottom:12px;
+  }
+  .task-card .lot{ font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--amber); letter-spacing:.5px; }
+  .task-card .title{ font-size:14px; font-weight:600; margin-top:5px; }
+  .task-card .who{ display:flex; align-items:center; gap:8px; margin-top:13px; }
+  .who-dot{ width:22px; height:22px; border-radius:50%; background:var(--leaf); color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono', monospace;}
+  .task-card .who span{ font-size:11.5px; color:#6f6a4e; }
+  .task-card .due{ margin-left:auto; font-size:10.5px; font-family:'IBM Plex Mono', monospace; color:#9b9474;}
+
+  /* ---------------- SCREEN 4: INVENTARIO ---------------- */
+  .inv-table-wrap{ overflow:hidden; }
+  .stock-bar{ height:7px; border-radius:4px; background:var(--parchment-dim); width:120px; overflow:hidden; }
+  .stock-bar i{ display:block; height:100%; background:var(--leaf); }
+  .stock-bar.low i{ background:var(--rust); }
+  .stock-bar.mid i{ background:var(--amber); }
+
+  /* ---------------- SCREEN 5: REPORTES ---------------- */
+  .report-tabs{ display:flex; gap:6px; margin-bottom:18px; }
+  .report-tabs div{
+    padding:9px 16px; font-size:12.5px; font-weight:600; color:#8a8264;
+    border:1px solid var(--line); border-radius:20px; background:var(--paper-white); cursor:pointer;
+  }
+  .report-tabs div.sel{ background:var(--leaf-dark); border-color:var(--leaf-dark); color:#fff; }
+  .bars{ display:flex; align-items:flex-end; gap:18px; height:200px; padding:20px 22px 0; }
+  .bar-col{ display:flex; flex-direction:column; align-items:center; gap:8px; flex:1; }
+  .bar-track{ width:100%; height:150px; display:flex; align-items:flex-end; background:linear-gradient(transparent 0%, transparent 99%, var(--line) 100%);}
+  .bar-fill{ width:100%; border-radius:5px 5px 0 0; background:var(--leaf); position:relative;}
+  .bar-fill.pest{ background:var(--rust); }
+  .bar-label{ font-size:10.5px; font-family:'IBM Plex Mono', monospace; color:#8a8264; }
+  .legend{ display:flex; gap:18px; padding:14px 22px 20px; font-size:11.5px; color:#6f6a4e; }
+  .legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .legend i{ width:10px; height:10px; border-radius:3px; display:inline-block; }
+
+  .pest-list .alert-item .t{ color:var(--rust); }
+
+  /* ---------------- SCREEN 6: MÓDULO IA ---------------- */
+  .ai-grid{ grid-template-columns:1.4fr 1fr; align-items:start; }
+  .ai-status{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--leaf-dark);
+  }
+  .ai-status i{ width:8px; height:8px; border-radius:50%; background:var(--leaf); display:inline-block; }
+  .pred-list{ display:flex; flex-direction:column; gap:12px; padding:20px 22px; }
+  .pred-card{
+    border:1px solid var(--line);
+    border-left:3px solid var(--leaf);
+    background:var(--parchment-dim);
+    border-radius:8px;
+    padding:14px 16px;
+    font-size:13px;
+    line-height:1.5;
+    color:#5c5740;
+  }
+  .pred-card b{ color:var(--leaf-dark); font-weight:700; }
+  .metric-block{ padding:20px 22px; display:flex; flex-direction:column; gap:18px; }
+  .metric-row{ display:flex; flex-direction:column; gap:7px; }
+  .metric-row .top{ display:flex; justify-content:space-between; align-items:baseline; font-size:13px; color:var(--soil); font-weight:600; }
+  .metric-row .top span.v{ font-family:'IBM Plex Mono', monospace; color:var(--leaf-dark); }
+  .metric-track{ height:7px; border-radius:4px; background:var(--parchment-dim); overflow:hidden; }
+  .metric-track i{ display:block; height:100%; background:var(--leaf); }
+  .metric-track.amber i{ background:var(--amber); }
+
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark">AgriMoreira</div>
+      <div class="sub">Finca agrícola · prototipo</div>
+    </div>
+    <nav class="nav">
+      <button class="active" data-screen="1">Panel general</button>
+      <button data-screen="2">Registro de cosecha</button>
+      <button data-screen="3">Tareas y trabajadores</button>
+      <button data-screen="4">Inventario de insumos</button>
+      <button data-screen="5">Reportes</button>
+      <button data-screen="6">Módulo IA</button>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="farmhand">
+        <div class="avatar">RM</div>
+        <div>
+          <div class="name">Raúl Moreira</div>
+          <div class="role">Administrador</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ===================== SCREEN 1: PANEL GENERAL ===================== -->
+    <section class="screen active" id="screen-1">
+      <div class="topbar">
+        <div>
+          <div class="crumbs">Finca / <b>Panel general</b></div>
+          <div class="page-title">Panel general</div>
+        </div>
+        <div class="topbar-right">
+          <div class="pill">Lunes, 29 jun</div>
+          <button class="btn-ghost">Exportar</button>
+          <button class="btn-primary">+ Nueva labor</button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="grid stat-row">
+          <div class="stat">
+            <div class="num">12</div>
+            <div class="lbl">Parcelas activas</div>
+            <div class="delta up">+2 vs. ayer</div>
+          </div>
+          <div class="stat">
+            <div class="num">7</div>
+            <div class="lbl">Trabajadores en campo</div>
+            <div class="delta up">100% asistencia</div>
+          </div>
+          <div class="stat">
+            <div class="num">2</div>
+            <div class="lbl">Alertas de plaga abiertas</div>
+            <div class="delta bad">Moniliasis · cacao</div>
+          </div>
+          <div class="stat">
+            <div class="num">2</div>
+            <div class="lbl">Insumos por agotarse</div>
+            <div class="delta warn">Revisar inventario</div>
+          </div>
+        </div>
+
+        <div class="grid dash-grid">
+          <div class="card plot-map">
+            <div class="card-head" style="padding:0 0 14px; border-bottom:none;">
+              <h3>Estado de parcelas</h3>
+              <span class="meta">PLÁTANO · CACAO · PALMA</span>
+            </div>
+            <div class="plots">
+              <div class="plot ok"><div class="crop">Plátano</div><div class="id">Lote A1</div><div class="status">Sin novedad</div></div>
+              <div class="plot ok"><div class="crop">Palma</div><div class="id">Lote A2</div><div class="status">Sin novedad</div></div>
+              <div class="plot alert"><div class="crop">Cacao</div><div class="id">Lote B1</div><div class="status">Moniliasis detectada</div></div>
+              <div class="plot watch"><div class="crop">Plátano</div><div class="id">Lote B2</div><div class="status">Revisar cigatoca</div></div>
+              <div class="plot ok"><div class="crop">Cacao</div><div class="id">Lote C1</div><div class="status">Sin novedad</div></div>
+              <div class="plot watch"><div class="crop">Plátano</div><div class="id">Lote C2</div><div class="status">Picudo negro · bajo</div></div>
+              <div class="plot ok"><div class="crop">Palma</div><div class="id">Lote D1</div><div class="status">Cosecha lista</div></div>
+              <div class="plot ok"><div class="crop">Cacao</div><div class="id">Lote D2</div><div class="status">Sin novedad</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3>Avisos recientes</h3><span class="meta">EN VIVO</span></div>
+            <div class="alert-list">
+              <div class="alert-item">
+                <div class="alert-dot rust"></div>
+                <div><div class="t">Moniliasis en Lote B1</div><div class="d">Reportado verbalmente por Andrés Cedeño</div></div>
+                <div class="when">hace 2 h</div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-dot amber"></div>
+                <div><div class="t">Fungicida sistémico bajo en stock</div><div class="d">Quedan 4 de 20 sacos</div></div>
+                <div class="when">hace 5 h</div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-dot leaf"></div>
+                <div><div class="t">Cosecha de plátano registrada</div><div class="d">Lote A1 · 38 racimos · Mario Suárez</div></div>
+                <div class="when">hoy, 7:40 a.m.</div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-dot amber"></div>
+                <div><div class="t">Cigatoca en observación</div><div class="d">Lote B2 · reportado por José Quinde</div></div>
+                <div class="when">ayer</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SCREEN 2: REGISTRO DE COSECHA ===================== -->
+    <section class="screen" id="screen-2">
+      <div class="topbar">
+        <div>
+          <div class="crumbs">Panel general / <b>Registro de cosecha</b></div>
+          <div class="page-title">Registro de cosecha</div>
+        </div>
+        <div class="topbar-right">
+          <button class="btn-ghost">Ver historial completo</button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="grid form-layout" style="align-items:start;">
+
+          <div class="card">
+            <div class="card-head"><h3>Nueva cosecha</h3><span class="meta">CAMPO REQUERIDO *</span></div>
+            <div class="form-block">
+
+              <div class="field" style="margin-bottom:16px;">
+                <label>Cultivo *</label>
+                <div class="seg">
+                  <div class="sel">Plátano</div>
+                  <div>Cacao</div>
+                  <div>Palma</div>
+                </div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label>Lote / parcela *</label>
+                  <div class="fake-input filled">Lote A1</div>
+                </div>
+                <div class="field">
+                  <label>Trabajador a cargo *</label>
+                  <div class="fake-input filled">Andrés Cedeño</div>
+                </div>
+              </div>
+
+              <div class="field" style="margin-bottom:16px;">
+                <label>Unidad de medida</label>
+                <div class="unit-toggle">
+                  <span class="sel">Racimo</span>
+                  <span>Tacho</span>
+                  <span>Tonelada</span>
+                  <span>Caja</span>
+                </div>
+                <div class="hint">El plátano se registra por racimo, el cacao por tacho, la palma por tonelada</div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label>Cantidad cosechada *</label>
+                  <div class="fake-input filled">38</div>
+                </div>
+                <div class="field">
+                  <label>Fecha</label>
+                  <div class="fake-input filled">29 / 06 / 2026</div>
+                </div>
+              </div>
+
+              <div class="field" style="margin-bottom:18px;">
+                <label>Observaciones</label>
+                <div class="fake-input filled" style="height:64px;">Buen estado general, sin señales de cigatoca en este lote.</div>
+              </div>
+
+              <button class="btn-primary" style="width:100%; text-align:center; padding:13px;">Guardar registro</button>
+            </div>
+          </div>
+
+          <div class="card summary-card">
+            <h3 style="font-family:'Fraunces',serif; font-size:17px; margin-bottom:14px;">Resumen del día</h3>
+            <div class="summary-line"><span>Racimos de plátano</span><span class="v">38</span></div>
+            <div class="summary-line"><span>Tachos de cacao</span><span class="v">12</span></div>
+            <div class="summary-line"><span>Toneladas de palma</span><span class="v">2.4 t</span></div>
+            <div class="summary-line"><span>Lotes trabajados</span><span class="v">3</span></div>
+            <div class="summary-total"><span>Total registros hoy</span><span class="v">7</span></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+          <div class="card-head"><h3>Últimos registros</h3><span class="meta">7 EN TOTAL</span></div>
+          <table class="recent-table">
+            <thead>
+              <tr><th>Fecha</th><th>Cultivo</th><th>Lote</th><th>Cantidad</th><th>Trabajador</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>29 jun, 7:40 a.m.</td><td><span class="badge plat">Plátano</span></td><td>Lote A1</td><td>38 racimos</td><td>Andrés Cedeño</td></tr>
+              <tr><td>28 jun, 4:10 p.m.</td><td><span class="badge cacao">Cacao</span></td><td>Lote C1</td><td>12 tachos</td><td>José Quinde</td></tr>
+              <tr><td>28 jun, 9:05 a.m.</td><td><span class="badge palma">Palma</span></td><td>Lote D1</td><td>2.4 t</td><td>Mario Suárez</td></tr>
+              <tr><td>27 jun, 6:50 a.m.</td><td><span class="badge plat">Plátano</span></td><td>Lote B2</td><td>29 racimos</td><td>Carlos Zambrano</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SCREEN 3: TAREAS Y TRABAJADORES ===================== -->
+    <section class="screen" id="screen-3">
+      <div class="topbar">
+        <div>
+          <div class="crumbs">Panel general / <b>Tareas y trabajadores</b></div>
+          <div class="page-title">Asignación de tareas</div>
+        </div>
+        <div class="topbar-right">
+          <div class="pill">Semana del 29 jun</div>
+          <button class="btn-primary">+ Asignar tarea</button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="grid board">
+
+          <div>
+            <div class="col-head"><h4>Por hacer</h4><span class="col-count">4</span></div>
+            <div class="task-card">
+              <div class="lot">LOTE B1 · CACAO</div>
+              <div class="title">Aplicar fungicida — moniliasis</div>
+              <div class="who"><div class="who-dot">JQ</div><span>José Quinde</span><span class="due">hoy</span></div>
+            </div>
+            <div class="task-card">
+              <div class="lot">LOTE C2 · PLÁTANO</div>
+              <div class="title">Control de maleza, corona</div>
+              <div class="who"><div class="who-dot">AC</div><span>Andrés Cedeño</span><span class="due">hoy</span></div>
+            </div>
+            <div class="task-card">
+              <div class="lot">LOTE D1 · PALMA</div>
+              <div class="title">Cosecha de racimos maduros</div>
+              <div class="who"><div class="who-dot">MS</div><span>Mario Suárez</span><span class="due">mañana</span></div>
+            </div>
+            <div class="task-card">
+              <div class="lot">GENERAL</div>
+              <div class="title">Entrega de insumos semanal</div>
+              <div class="who"><div class="who-dot">RM</div><span>Raúl Moreira</span><span class="due">mié</span></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="col-head"><h4>En curso</h4><span class="col-count">2</span></div>
+            <div class="task-card">
+              <div class="lot">LOTE A1 · PLÁTANO</div>
+              <div class="title">Fertilización programada</div>
+              <div class="who"><div class="who-dot">CZ</div><span>Carlos Zambrano</span><span class="due">en progreso</span></div>
+            </div>
+            <div class="task-card">
+              <div class="lot">LOTE B2 · PLÁTANO</div>
+              <div class="title">Revisión de cigatoca</div>
+              <div class="who"><div class="who-dot">LM</div><span>Luis Macías</span><span class="due">en progreso</span></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="col-head"><h4>Bloqueado</h4><span class="col-count">1</span></div>
+            <div class="task-card">
+              <div class="lot">LOTE D2 · CACAO</div>
+              <div class="title">Poda fitosanitaria</div>
+              <div class="who"><div class="who-dot">PL</div><span>Pedro Loor — falta herramienta</span></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="col-head"><h4>Completado</h4><span class="col-count">5</span></div>
+            <div class="task-card" style="opacity:.6;">
+              <div class="lot">LOTE A2 · PALMA</div>
+              <div class="title">Cosecha de racimos</div>
+              <div class="who"><div class="who-dot">VP</div><span>Vicente Pincay</span><span class="due">ayer</span></div>
+            </div>
+            <div class="task-card" style="opacity:.6;">
+              <div class="lot">LOTE C1 · CACAO</div>
+              <div class="title">Cosecha de tachos</div>
+              <div class="who"><div class="who-dot">JQ</div><span>José Quinde</span><span class="due">ayer</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SCREEN 4: INVENTARIO ===================== -->
+    <section class="screen" id="screen-4">
+      <div class="topbar">
+        <div>
+          <div class="crumbs">Panel general / <b>Inventario de insumos</b></div>
+          <div class="page-title">Inventario de insumos</div>
+        </div>
+        <div class="topbar-right">
+          <div class="pill">Alertas automáticas: activas</div>
+          <button class="btn-primary">+ Registrar entrada</button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="card inv-table-wrap">
+          <div class="card-head"><h3>Existencias actuales</h3><span class="meta">14 INSUMOS</span></div>
+          <table class="recent-table">
+            <thead>
+              <tr><th>Insumo</th><th>Tipo</th><th>Para cultivo</th><th>Stock</th><th>Nivel</th><th>Estado</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Fungicida sistémico</td><td>Fungicida</td><td><span class="badge cacao">Cacao</span></td>
+                <td>4 / 20 sacos</td>
+                <td><div class="stock-bar low"><i style="width:20%"></i></div></td>
+                <td><span class="delta bad" style="display:inline-block;">Crítico</span></td>
+              </tr>
+              <tr>
+                <td>Fertilizante NPK</td><td>Fertilizante</td><td><span class="badge plat">Plátano</span></td>
+                <td>7 / 25 sacos</td>
+                <td><div class="stock-bar mid"><i style="width:28%"></i></div></td>
+                <td><span class="delta warn" style="display:inline-block;">Por agotarse</span></td>
+              </tr>
+              <tr>
+                <td>Herbicida selectivo</td><td>Herbicida</td><td><span class="badge plat">Plátano</span></td>
+                <td>18 / 20 litros</td>
+                <td><div class="stock-bar"><i style="width:90%"></i></div></td>
+                <td><span class="delta up" style="display:inline-block;">Suficiente</span></td>
+              </tr>
+              <tr>
+                <td>Cal agrícola</td><td>Corrector de suelo</td><td><span class="badge cacao">Cacao</span></td>
+                <td>30 / 30 sacos</td>
+                <td><div class="stock-bar"><i style="width:100%"></i></div></td>
+                <td><span class="delta up" style="display:inline-block;">Suficiente</span></td>
+              </tr>
+              <tr>
+                <td>Machetes</td><td>Herramienta</td><td>General</td>
+                <td>9 / 10 unid.</td>
+                <td><div class="stock-bar"><i style="width:90%"></i></div></td>
+                <td><span class="delta up" style="display:inline-block;">Suficiente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SCREEN 5: REPORTES ===================== -->
+    <section class="screen" id="screen-5">
+      <div class="topbar">
+        <div>
+          <div class="crumbs">Panel general / <b>Reportes</b></div>
+          <div class="page-title">Reportes</div>
+        </div>
+        <div class="topbar-right">
+          <div class="pill">Periodo: junio 2026</div>
+          <button class="btn-ghost">Descargar PDF</button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="report-tabs">
+          <div class="sel">Pérdidas por plaga</div>
+          <div>Rendimiento por lote</div>
+          <div>Costos</div>
+          <div>Por periodo</div>
+        </div>
+
+        <div class="grid dash-grid">
+          <div class="card">
+            <div class="card-head"><h3>Pérdidas estimadas por plaga</h3><span class="meta">% SOBRE COSECHA ESPERADA</span></div>
+            <div class="bars">
+              <div class="bar-col">
+                <div class="bar-track"><div class="bar-fill pest" style="height:62%"></div></div>
+                <div class="bar-label">Moniliasis</div>
+              </div>
+              <div class="bar-col">
+                <div class="bar-track"><div class="bar-fill pest" style="height:41%"></div></div>
+                <div class="bar-label">Cigatoca</div>
+              </div>
+              <div class="bar-col">
+                <div class="bar-track"><div class="bar-fill pest" style="height:23%"></div></div>
+                <div class="bar-label">Picudo negro</div>
+              </div>
+              <div class="bar-col">
+                <div class="bar-track"><div class="bar-fill" style="height:8%"></div></div>
+                <div class="bar-label">Otras</div>
+              </div>
+            </div>
+            <div class="legend">
+              <span><i style="background:var(--rust)"></i> Impacto alto</span>
+              <span><i style="background:var(--leaf)"></i> Impacto bajo</span>
+            </div>
+          </div>
+
+          <div class="card pest-list">
+            <div class="card-head"><h3>Lotes más afectados</h3><span class="meta">3 ACTIVOS</span></div>
+            <div class="alert-list">
+              <div class="alert-item">
+                <div class="alert-dot rust"></div>
+                <div><div class="t">Lote B1 — Moniliasis</div><div class="d">Cacao · pérdida estimada 62% · reportado por José Quinde</div></div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-dot amber"></div>
+                <div><div class="t">Lote B2 — Cigatoca</div><div class="d">Plátano · pérdida estimada 41% · reportado por Luis Macías</div></div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-dot amber"></div>
+                <div><div class="t">Lote C2 — Picudo negro</div><div class="d">Plátano · pérdida estimada 23% · reportado por Andrés Cedeño</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+          <div class="card-head"><h3>Rendimiento por lote — últimos 4 periodos</h3><span class="meta">EN VOLUMEN COSECHADO</span></div>
+          <div class="bars" style="height:170px;">
+            <div class="bar-col"><div class="bar-track"><div class="bar-fill" style="height:55%"></div></div><div class="bar-label">Mar</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar-fill" style="height:70%"></div></div><div class="bar-label">Abr</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar-fill" style="height:48%"></div></div><div class="bar-label">May</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar-fill" style="height:80%"></div></div><div class="bar-label">Jun</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SCREEN 6: MÓDULO IA ===================== -->
+    <section class="screen" id="screen-6">
+      <div class="topbar">
+        <div>
+          <div class="crumbs">Panel general / <b>Módulo IA</b></div>
+          <div class="page-title">Módulo de inteligencia artificial</div>
+        </div>
+        <div class="topbar-right">
+          <div class="ai-status"><i></i> IA activa — monitoreo continuo</div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="grid ai-grid">
+
+          <div class="card">
+            <div class="card-head"><h3>Predicciones y recomendaciones</h3><span class="meta">EN VIVO</span></div>
+            <div class="pred-list">
+              <div class="pred-card">
+                <b>Alerta temprana de plaga:</b> el patrón de registros del Lote B1 coincide con el inicio de un brote de moniliasis, 3 días antes de que José Quinde lo reportara verbalmente.
+              </div>
+              <div class="pred-card">
+                <b>Recomendación de labor:</b> priorizar el control de maleza en el Lote C2 esta semana; lleva 9 días sin labor registrada según la bitácora de Andrés Cedeño.
+              </div>
+              <div class="pred-card">
+                <b>Proyección de cosecha:</b> se estima un volumen de 40–44 racimos en el Lote A1 para el próximo corte, basado en el ritmo de los últimos 3 registros.
+              </div>
+              <div class="pred-card">
+                <b>Aviso de inventario:</b> al ritmo actual de consumo, el fungicida sistémico se agotará en 5 días; se sugiere coordinar la compra con Raúl Moreira.
+              </div>
+            </div>
+          </div>
+
+          <div class="card metric-block">
+            <h3 style="font-family:'Fraunces',serif; font-size:17px;">Métricas del modelo</h3>
+
+            <div class="metric-row">
+              <div class="top"><span>Precisión de predicciones</span><span class="v">94.2%</span></div>
+              <div class="metric-track"><i style="width:94%"></i></div>
+            </div>
+            <div class="metric-row">
+              <div class="top"><span>Alertas procesadas hoy</span><span class="v">127</span></div>
+              <div class="metric-track amber"><i style="width:65%"></i></div>
+            </div>
+            <div class="metric-row">
+              <div class="top"><span>Modelos activos</span><span class="v">5/5</span></div>
+              <div class="metric-track"><i style="width:100%"></i></div>
+            </div>
+            <div class="metric-row">
+              <div class="top"><span>Confianza del último aviso</span><span class="v">88%</span></div>
+              <div class="metric-track"><i style="width:88%"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+          <div class="card-head"><h3>Validar recomendación</h3><span class="meta">REQUIERE CONFIRMACIÓN DEL ADMINISTRADOR</span></div>
+          <div class="form-block" style="display:flex; align-items:center; justify-content:space-between; gap:18px;">
+            <div class="hint" style="font-size:12.5px; max-width:560px; color:#7a7256;">
+              Recomendación pendiente: aplicar fungicida preventivo en Lote D2 antes de que la moniliasis se extienda desde el Lote B1. Raúl Moreira debe confirmarla antes de registrarse como aplicada.
+            </div>
+            <div style="display:flex; gap:10px; flex-shrink:0;">
+              <button class="btn-ghost">Descartar</button>
+              <button class="btn-primary">Confirmar y aplicar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  document.querySelectorAll('.nav button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('screen-'+btn.dataset.screen).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
