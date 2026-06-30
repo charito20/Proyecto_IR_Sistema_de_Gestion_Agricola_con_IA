@@ -112,7 +112,7 @@
         <mxCell id="JD1dsvU62gR8ug19cACk-31" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Analizar datos de cultivos" vertex="1">
           <mxGeometry height="40" width="116" x="582" y="110" as="geometry" />
         </mxCell>
-        <mxCell id="JD1dsvU62gR8ug19cACk-32" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Consultar tareas" vertex="1">
+        <mxCell id="JD1dsvU62gR8ug19cACk-32" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Consultar tareas a realizar" vertex="1">
           <mxGeometry height="40" width="116" x="346" y="460" as="geometry" />
         </mxCell>
         <mxCell id="JD1dsvU62gR8ug19cACk-33" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Consultar recomendaciones de IA" vertex="1">
