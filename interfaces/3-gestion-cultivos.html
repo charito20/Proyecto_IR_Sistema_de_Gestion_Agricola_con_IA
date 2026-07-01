@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>SGA — Gestión de cultivos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest:#1B4332; --forest-dark:#122B21; --cream:#F7F2E7;
+    --cacao:#6F4518; --sage:#A8C3A0; --gold:#C9963C; --ink:#23301F;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--ink);display:flex;min-height:100vh;}
+
+  .sidebar{width:230px;background:var(--forest-dark);color:var(--cream);display:flex;flex-direction:column;padding:26px 18px;}
+  .brand{font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin-bottom:36px;padding-left:6px;}
+  .brand span{color:var(--gold);}
+  nav{display:flex;flex-direction:column;gap:3px;flex:1;}
+  nav a{color:rgba(247,242,231,0.72);text-decoration:none;font-size:13.5px;font-weight:500;padding:11px 12px;border-radius:8px;display:flex;align-items:center;gap:10px;}
+  nav a .dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:0.5;}
+  nav a.active{background:rgba(201,150,60,0.16);color:var(--gold);font-weight:600;}
+  nav a.active .dot{background:var(--gold);opacity:1;}
+
+  main{flex:1;padding:36px 44px;max-width:1120px;}
+  .topline{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:26px;}
+  .eyebrow{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--cacao);font-weight:600;margin-bottom:6px;}
+  h1{font-family:'Fraunces',serif;font-size:30px;font-weight:600;}
+  .btn-new{background:var(--forest);color:#fff;border:none;padding:12px 20px;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;}
+
+  .tabs{display:flex;gap:8px;margin-bottom:22px;}
+  .tabs button{border:1.5px solid #E5DCC6;background:#fff;padding:9px 16px;border-radius:20px;font-size:13px;font-weight:600;color:#6b7768;cursor:pointer;}
+  .tabs button.active{background:var(--sage);border-color:var(--sage);color:var(--forest-dark);}
+
+  .cardgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:30px;}
+  .crop{background:#fff;border:1px solid #E9E1CC;border-radius:14px;overflow:hidden;}
+  .crop .top{height:76px;display:flex;align-items:center;justify-content:space-between;padding:16px 18px;}
+  .crop.cacao .top{background:linear-gradient(135deg,#6F4518,#8B5A2B);}
+  .crop.verde .top{background:linear-gradient(135deg,#1B4332,#2C6350);}
+  .crop .top span{color:#fff;font-weight:700;font-size:14px;}
+  .crop .body{padding:16px 18px;}
+  .crop .body .name{font-family:'Fraunces',serif;font-size:17px;font-weight:600;margin-bottom:4px;}
+  .crop .body .loc{font-size:12.5px;color:#8a9284;margin-bottom:14px;}
+  .row{display:flex;justify-content:space-between;font-size:12.5px;padding:6px 0;border-top:1px solid #F2ECDB;color:#5b6b56;}
+  .row b{color:var(--ink);}
+
+  .panel{background:#fff;border:1px solid #E9E1CC;border-radius:14px;padding:24px;}
+  .panel h2{font-family:'Fraunces',serif;font-size:17px;font-weight:600;margin-bottom:16px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{text-align:left;color:#8a9284;font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:0.4px;padding-bottom:10px;border-bottom:1px solid #EEE6D2;}
+  td{padding:12px 0;border-bottom:1px solid #F2ECDB;}
+  .badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:#E3EEE0;color:var(--forest);}
+</style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="brand">SGA <span>·</span> Panel</div>
+    <nav>
+      <a><span class="dot"></span>Inicio</a>
+      <a><span class="dot"></span>Parcelas</a>
+      <a class="active"><span class="dot"></span>Cultivos</a>
+      <a><span class="dot"></span>Cosechas</a>
+      <a><span class="dot"></span>Tareas</a>
+      <a><span class="dot"></span>Inventario</a>
+      <a><span class="dot"></span>Reportes</a>
+      <a><span class="dot"></span>Módulo IA</a>
+    </nav>
+  </div>
+
+  <main>
+    <div class="topline">
+      <div>
+        <div class="eyebrow">RF-03 · Gestión de cultivos</div>
+        <h1>Cultivos de la finca</h1>
+      </div>
+      <button class="btn-new">+ Registrar cultivo</button>
+    </div>
+
+    <div class="tabs">
+      <button class="active">Todos (19)</button>
+      <button>Cacao (11)</button>
+      <button>Verde (8)</button>
+    </div>
+
+    <div class="cardgrid">
+      <div class="crop cacao">
+        <div class="top"><span>Cacao</span><span>Lote 4</span></div>
+        <div class="body">
+          <div class="name">Cacao CCN-51</div>
+          <div class="loc">Parcela Norte · 2.4 ha</div>
+          <div class="row">Fecha de siembra <b>Mar 2023</b></div>
+          <div class="row">Estado <b>En producción</b></div>
+        </div>
+      </div>
+      <div class="crop verde">
+        <div class="top"><span>Verde</span><span>Lote 2</span></div>
+        <div class="body">
+          <div class="name">Plátano verde</div>
+          <div class="loc">Parcela Este · 1.8 ha</div>
+          <div class="row">Fecha de siembra <b>Ago 2024</b></div>
+          <div class="row">Estado <b>Próximo a cosecha</b></div>
+        </div>
+      </div>
+      <div class="crop cacao">
+        <div class="top"><span>Cacao</span><span>Lote 7</span></div>
+        <div class="body">
+          <div class="name">Cacao Nacional</div>
+          <div class="loc">Parcela Sur · 3.1 ha</div>
+          <div class="row">Fecha de siembra <b>Ene 2022</b></div>
+          <div class="row">Estado <b>En producción</b></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Historial de cultivos por parcela</h2>
+      <table>
+        <tr><th>Cultivo</th><th>Parcela</th><th>Área</th><th>Estado</th></tr>
+        <tr><td>Cacao CCN-51</td><td>Parcela Norte</td><td>2.4 ha</td><td><span class="badge">Activo</span></td></tr>
+        <tr><td>Plátano verde</td><td>Parcela Este</td><td>1.8 ha</td><td><span class="badge">Activo</span></td></tr>
+        <tr><td>Cacao Nacional</td><td>Parcela Sur</td><td>3.1 ha</td><td><span class="badge">Activo</span></td></tr>
+        <tr><td>Plátano verde</td><td>Parcela Oeste</td><td>1.2 ha</td><td><span class="badge">Activo</span></td></tr>
+      </table>
+    </div>
+  </main>
+
+</body>
+</html>
