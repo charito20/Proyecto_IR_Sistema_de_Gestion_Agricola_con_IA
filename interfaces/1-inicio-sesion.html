@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>SGA — Inicio de sesión</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest:#1B4332;
+    --forest-dark:#122B21;
+    --cream:#F7F2E7;
+    --cacao:#6F4518;
+    --sage:#A8C3A0;
+    --gold:#C9963C;
+    --ink:#23301F;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+  }
+  .art{
+    flex:1.1;
+    background:
+      repeating-linear-gradient(100deg, rgba(247,242,231,0.06) 0px, rgba(247,242,231,0.06) 1px, transparent 1px, transparent 64px),
+      repeating-linear-gradient(10deg, rgba(247,242,231,0.05) 0px, rgba(247,242,231,0.05) 1px, transparent 1px, transparent 46px),
+      linear-gradient(160deg, var(--forest) 0%, var(--forest-dark) 100%);
+    color:var(--cream);
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    padding:56px;
+    position:relative;
+    overflow:hidden;
+  }
+  .art::after{
+    content:"";
+    position:absolute;
+    right:-90px;
+    bottom:-90px;
+    width:340px;
+    height:340px;
+    border-radius:50%;
+    border:1.5px solid rgba(201,150,60,0.35);
+  }
+  .art::before{
+    content:"";
+    position:absolute;
+    right:-40px;
+    bottom:-40px;
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    border:1.5px solid rgba(168,195,160,0.3);
+  }
+  .brand{font-family:'Fraunces',serif;font-size:22px;font-weight:600;letter-spacing:0.5px;}
+  .brand span{color:var(--gold);}
+  .art h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:44px;
+    line-height:1.15;
+    max-width:460px;
+    margin-top:40px;
+  }
+  .art p{
+    margin-top:18px;
+    max-width:380px;
+    color:rgba(247,242,231,0.75);
+    font-size:15px;
+    line-height:1.6;
+  }
+  .tag{
+    display:inline-flex;
+    gap:8px;
+    align-items:center;
+    font-size:12px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--sage);
+    margin-top:6px;
+  }
+  .tag::before{content:"";width:22px;height:1px;background:var(--sage);}
+
+  .panel{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px;
+  }
+  .card{width:100%;max-width:380px;}
+  .card .eyebrow{
+    font-size:12px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--cacao);
+    font-weight:600;
+    margin-bottom:10px;
+  }
+  .card h2{
+    font-family:'Fraunces',serif;
+    font-size:28px;
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  .card .sub{color:#5b6b56;font-size:14px;margin-bottom:32px;}
+
+  .field{margin-bottom:18px;}
+  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:7px;color:var(--ink);}
+  .field input, .field select{
+    width:100%;
+    padding:13px 14px;
+    border:1.5px solid #DCD3BE;
+    border-radius:8px;
+    background:#fff;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    color:var(--ink);
+  }
+  .field input:focus, .field select:focus{outline:2px solid var(--forest);outline-offset:1px;border-color:var(--forest);}
+
+  .role-toggle{display:flex;gap:8px;margin-bottom:24px;}
+  .role-toggle button{
+    flex:1;
+    padding:10px;
+    border-radius:8px;
+    border:1.5px solid #DCD3BE;
+    background:#fff;
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    color:#6b7768;
+    cursor:pointer;
+  }
+  .role-toggle button.active{
+    background:var(--forest);
+    border-color:var(--forest);
+    color:#fff;
+  }
+
+  .submit{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:8px;
+    background:var(--gold);
+    color:var(--forest-dark);
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    letter-spacing:0.3px;
+    cursor:pointer;
+    margin-top:6px;
+  }
+  .foot{margin-top:22px;font-size:12.5px;color:#8a9284;text-align:center;}
+  .foot a{color:var(--cacao);text-decoration:none;font-weight:600;}
+</style>
+</head>
+<body>
+
+  <div class="art">
+    <div class="brand">SGA <span>·</span> Verde &amp; Cacao</div>
+    <div>
+      <h1>Cada parcela, cada cosecha, un solo lugar.</h1>
+      <p>Sistema de Gestión Agrícola con Inteligencia Artificial para el seguimiento de cultivos de verde y cacao.</p>
+      <div class="tag">RF-01 · Inicio de sesión</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="card">
+      <div class="eyebrow">Acceso al sistema</div>
+      <h2>Bienvenido de nuevo</h2>
+      <div class="sub">Ingresa tus credenciales para continuar.</div>
+
+      <div class="role-toggle">
+        <button class="active">Administrador</button>
+        <button>Trabajador agrícola</button>
+      </div>
+
+      <div class="field">
+        <label>Usuario</label>
+        <input type="text" placeholder="nombre.apellido">
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" placeholder="••••••••••">
+      </div>
+
+      <button class="submit">Iniciar sesión</button>
+      <div class="foot">¿Olvidaste tu contraseña? <a href="#">Recupérala aquí</a></div>
+    </div>
+  </div>
+
+</body>
+</html>
