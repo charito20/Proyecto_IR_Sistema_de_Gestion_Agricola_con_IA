@@ -9,3 +9,5 @@ Aquí se almacenan imágenes como:
 - Evidencias de las entrevistas (con consentimiento).
 - Equipos, cultivos o áreas de trabajo.
 - Cualquier otra evidencia fotográfica relacionada con el levantamiento de requisitos.
+
+Las fotografías deben contar con una nomenclatura clara y una fecha de registro.
