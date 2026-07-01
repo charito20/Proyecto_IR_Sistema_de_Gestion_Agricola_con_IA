@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>SGA — Registro de parcelas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest:#1B4332; --forest-dark:#122B21; --cream:#F7F2E7;
+    --cacao:#6F4518; --sage:#A8C3A0; --gold:#C9963C; --ink:#23301F;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--ink);display:flex;min-height:100vh;}
+
+  .sidebar{width:230px;background:var(--forest-dark);color:var(--cream);display:flex;flex-direction:column;padding:26px 18px;}
+  .brand{font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin-bottom:36px;padding-left:6px;}
+  .brand span{color:var(--gold);}
+  nav{display:flex;flex-direction:column;gap:3px;flex:1;}
+  nav a{color:rgba(247,242,231,0.72);text-decoration:none;font-size:13.5px;font-weight:500;padding:11px 12px;border-radius:8px;display:flex;align-items:center;gap:10px;}
+  nav a .dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:0.5;}
+  nav a.active{background:rgba(201,150,60,0.16);color:var(--gold);font-weight:600;}
+  nav a.active .dot{background:var(--gold);opacity:1;}
+
+  main{flex:1;padding:36px 44px;max-width:1160px;}
+  .eyebrow{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--cacao);font-weight:600;margin-bottom:6px;}
+  h1{font-family:'Fraunces',serif;font-size:30px;font-weight:600;margin-bottom:26px;}
+
+  .cols{display:grid;grid-template-columns:1fr 1.5fr;gap:20px;}
+  .panel{background:#fff;border:1px solid #E9E1CC;border-radius:14px;padding:24px;}
+  .panel h2{font-family:'Fraunces',serif;font-size:17px;font-weight:600;margin-bottom:18px;}
+
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:#5b6b56;}
+  .field input, .field select{
+    width:100%;padding:11px 12px;border:1.5px solid #DCD3BE;border-radius:8px;
+    background:#fff;font-family:'Inter',sans-serif;font-size:13.5px;color:var(--ink);
+  }
+  .fieldrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .submit{width:100%;padding:13px;border:none;border-radius:8px;background:var(--forest);color:#fff;font-weight:700;font-size:13.5px;cursor:pointer;margin-top:6px;}
+
+  .plotmap{
+    height:150px;border-radius:10px;margin-bottom:18px;
+    background:
+      linear-gradient(90deg, transparent 24%, rgba(27,67,50,0.12) 25%, rgba(27,67,50,0.12) 26%, transparent 27%, transparent 74%, rgba(27,67,50,0.12) 75%, rgba(27,67,50,0.12) 76%, transparent 77%),
+      linear-gradient(0deg, transparent 32%, rgba(27,67,50,0.12) 33%, rgba(27,67,50,0.12) 34%, transparent 35%, transparent 64%, rgba(27,67,50,0.12) 65%, rgba(27,67,50,0.12) 66%, transparent 67%),
+      linear-gradient(135deg, var(--sage) 0%, #C9D9BE 100%);
+    position:relative;
+  }
+  .pin{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--cacao);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.25);}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{text-align:left;color:#8a9284;font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:0.4px;padding-bottom:10px;border-bottom:1px solid #EEE6D2;}
+  td{padding:12px 0;border-bottom:1px solid #F2ECDB;}
+  .badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:#E3EEE0;color:var(--forest);}
+</style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="brand">SGA <span>·</span> Panel</div>
+    <nav>
+      <a><span class="dot"></span>Inicio</a>
+      <a class="active"><span class="dot"></span>Parcelas</a>
+      <a><span class="dot"></span>Cultivos</a>
+      <a><span class="dot"></span>Cosechas</a>
+      <a><span class="dot"></span>Tareas</a>
+      <a><span class="dot"></span>Inventario</a>
+      <a><span class="dot"></span>Reportes</a>
+      <a><span class="dot"></span>Módulo IA</a>
+    </nav>
+  </div>
+
+  <main>
+    <div class="eyebrow">RF-02 · Registro de parcelas</div>
+    <h1>Parcelas de la finca</h1>
+
+    <div class="cols">
+      <div class="panel">
+        <h2>Nueva parcela</h2>
+        <div class="plotmap"><div class="pin" style="top:38%;left:44%;"></div></div>
+        <div class="field">
+          <label>Nombre de la parcela</label>
+          <input type="text" placeholder="Ej. Parcela Norte">
+        </div>
+        <div class="fieldrow">
+          <div class="field">
+            <label>Área (ha)</label>
+            <input type="text" placeholder="2.4">
+          </div>
+          <div class="field">
+            <label>Cultivo actual</label>
+            <select><option>Cacao</option><option>Verde</option></select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Ubicación / referencia</label>
+          <input type="text" placeholder="Sector norte, junto al canal de riego">
+        </div>
+        <button class="submit">Guardar parcela</button>
+      </div>
+
+      <div class="panel">
+        <h2>Parcelas registradas</h2>
+        <table>
+          <tr><th>Parcela</th><th>Área</th><th>Cultivo</th><th>Estado</th></tr>
+          <tr><td>Parcela Norte</td><td>2.4 ha</td><td>Cacao</td><td><span class="badge">Activa</span></td></tr>
+          <tr><td>Parcela Este</td><td>1.8 ha</td><td>Verde</td><td><span class="badge">Activa</span></td></tr>
+          <tr><td>Parcela Sur</td><td>3.1 ha</td><td>Cacao</td><td><span class="badge">Activa</span></td></tr>
+          <tr><td>Parcela Oeste</td><td>1.2 ha</td><td>Verde</td><td><span class="badge">Activa</span></td></tr>
+          <tr><td>Parcela Central</td><td>1.6 ha</td><td>Cacao</td><td><span class="badge">Activa</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>
